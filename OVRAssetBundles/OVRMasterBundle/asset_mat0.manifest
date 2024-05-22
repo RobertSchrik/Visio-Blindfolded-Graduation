@@ -1,0 +1,29 @@
+ManifestFileVersion: 0
+CRC: 1320419507
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: adbc08ffc114473714b0a13353e8779c
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: b30fce1a9ad74efb72be6c308c56e365
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: adbc08ffc114473714b0a13353e8779c
+HashAppended: 0
+ClassTypes:
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Projects/Blindfolded/Materials/New Material.mat
+- Assets/Projects/Blindfolded/Materials/Ground.mat
+- Packages/com.unity.probuilder/Content/Resources/Materials/ProBuilderDefault.mat
+- Assets/Projects/Blindfolded/Materials/New Material 1.mat
+Dependencies:
+- C:/Users/Daniel/Documents/GitHub/Visio-Blindfolded/OVRAssetBundles/OVRMasterBundle/asset_png0
+- C:/Users/Daniel/Documents/GitHub/Visio-Blindfolded/OVRAssetBundles/OVRMasterBundle/asset_shader0

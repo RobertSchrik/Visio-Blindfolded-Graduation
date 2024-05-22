@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52b156339780f13419e74eb509cd4993, type: 3}
+  m_Name: Hide & Seek
+  m_EditorClassIdentifier: 
+  ConntectingNodes:
+  - {fileID: 11400000, guid: 962e3b37e374f644ca4c7bbec1203e84, type: 2}
+  - {fileID: 11400000, guid: 85a426ae7d510764d9e76b6951aa456f, type: 2}
+  StoryLength: 3
+  ConclusionNode: {fileID: 11400000, guid: 02e99b7ee983dc34692e63b66e7e7e41, type: 2}
+  LocationNode: Node_1
+  VocalProgressionLog:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

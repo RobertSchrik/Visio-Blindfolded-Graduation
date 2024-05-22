@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22487712fc2fece4783f536df7059cd2, type: 3}
+  m_Name: StoryTest_1
+  m_EditorClassIdentifier: 
+  ConntectingNodes:
+  - {fileID: 11400000, guid: 85a426ae7d510764d9e76b6951aa456f, type: 2}
+  - {fileID: 11400000, guid: 85a426ae7d510764d9e76b6951aa456f, type: 2}
+  LeadConcludingNode: {fileID: 11400000, guid: 4fb14296d02e74549a745582c7138a75, type: 2}
+  LocationNode: Node_26
+  VocalProgressionLog: []

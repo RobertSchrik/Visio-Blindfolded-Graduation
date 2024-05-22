@@ -1,0 +1,46 @@
+newmtl Grey
+Kd 0.4470589 0.4862745 0.5215686
+d 1
+
+newmtl LowerWallColor
+Kd 0.1137255 0.1568627 0.2470588
+d 1
+
+newmtl White_Wall
+Kd 1 1 1
+d 1
+
+newmtl Black
+Kd 0 0 0
+d 1
+
+newmtl Glass
+Kd 1 1 1
+d 0.2784314
+
+newmtl LowerWallType2
+Kd 0.7764707 0.6431373 0.454902
+d 1
+
+newmtl brick
+map_Kd 0058-512x512.jpg
+Kd 0.7169812 0.7169812 0.7169812
+d 1
+
+newmtl Planks
+map_Kd 740a4f53f76974b02b9bc103a5cad29c.jpg
+Kd 1 1 1
+d 1
+
+newmtl red
+Kd 1 0.08018868 0.1529411
+d 1
+
+newmtl New_Material_2
+Kd 0.9811321 0.9377714 0.8469206
+d 1
+
+newmtl New_Material
+Kd 0.854902 0.7882354 0.7254902
+d 1
+

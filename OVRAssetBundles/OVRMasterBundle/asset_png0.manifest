@@ -1,0 +1,22 @@
+ManifestFileVersion: 0
+CRC: 3034987294
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 0d167f3ec54909aaa88137e26c2f1be7
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 2612ac43db082a73502ee80f2eceb73f
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 0d167f3ec54909aaa88137e26c2f1be7
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Packages/com.unity.ai.navigation/Gizmos/NavMeshModifier Icon.png
+- Packages/com.unity.ai.navigation/Gizmos/NavMeshSurface Icon.png
+- Packages/com.unity.probuilder/Content/Resources/Textures/GridBox_Default.png
+Dependencies: []

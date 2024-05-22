@@ -1,0 +1,8 @@
+newmtl Black
+Kd 0 0 0
+d 1
+
+newmtl Grey
+Kd 0.4470589 0.4862745 0.5215686
+d 1
+

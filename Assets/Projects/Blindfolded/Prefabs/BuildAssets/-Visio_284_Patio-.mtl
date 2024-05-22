@@ -1,0 +1,43 @@
+newmtl ProBuilderDefault
+map_Kd GridBox_Default.png
+Kd 1 1 1
+d 1
+
+newmtl LowerWallColor
+Kd 0.1137255 0.1568627 0.2470588
+d 1
+
+newmtl HigherWallType1
+Kd 0.2980392 0.3803921 0.4588236
+d 1
+
+newmtl MiddleWallType1
+Kd 0.2627451 0.3215686 0.4196078
+d 1
+
+newmtl White_Wall
+Kd 1 1 1
+d 1
+
+newmtl Metal
+Kd 0.5849056 0.5380028 0.5380028
+d 1
+
+newmtl New_Material_2
+Kd 0.9811321 0.9377714 0.8469206
+d 1
+
+newmtl Flooring_Type_2
+Kd 0.4313726 0.5411765 0.6470588
+d 1
+
+newmtl brick
+map_Kd 0058-512x512.jpg
+Kd 0.7169812 0.7169812 0.7169812
+d 1
+
+newmtl Planks
+map_Kd 740a4f53f76974b02b9bc103a5cad29c.jpg
+Kd 1 1 1
+d 1
+

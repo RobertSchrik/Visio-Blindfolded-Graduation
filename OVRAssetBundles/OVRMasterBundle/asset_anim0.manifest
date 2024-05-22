@@ -1,0 +1,22 @@
+ManifestFileVersion: 0
+CRC: 2901479410
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 99802a815411c746c9db7e527a525c91
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 5941c3541d8b403f80e37b0d697371e8
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 99802a815411c746c9db7e527a525c91
+HashAppended: 0
+ClassTypes:
+- Class: 74
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Projects/Blindfolded/Animatinos/SlideDoorClosed.anim
+- Assets/Projects/Blindfolded/Animatinos/SlideDoor.anim
+- Assets/Projects/Blindfolded/Animatinos/Idle.anim
+Dependencies: []

@@ -1,0 +1,39 @@
+ManifestFileVersion: 0
+CRC: 3390327268
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 776c194ee8b96f51d9f32c85b72d0305
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 8e87b06ef332709c4547e287290122d6
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 776c194ee8b96f51d9f32c85b72d0305
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 52b156339780f13419e74eb509cd4993, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 27e03fe098dadd04f83b074ff0498dfa, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 22487712fc2fece4783f536df7059cd2, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 238
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Projects/Blindfolded/ScriptableObjects/MasterNodes/Leaving School.asset
+- Assets/Projects/Blindfolded/ScriptableObjects/MasterNodes/Detective Work.asset
+- Assets/Projects/Blindfolded/ScriptableObjects/ObjectiveNodes/StoryTest_2.asset
+- Assets/Projects/Blindfolded/ScriptableObjects/ConclusionNodoes/Detective Conclusion.asset
+- Assets/Projects/Blindfolded/ScriptableObjects/ObjectiveNodes/StoryTest_1.asset
+- Assets/Projects/Blindfolded/ScriptableObjects/ConclusionNodoes/Hide & Seek Conclusion.asset
+- Packages/com.unity.probuilder/Content/Icons/Scripts/MeshFilter Icon.asset
+- Assets/Projects/Blindfolded/ScriptableObjects/MasterNodes/Hide & Seek.asset
+- Assets/Projects/Blindfolded/Scenes/Main 2/NavMesh-NavMesh.asset
+- Assets/Projects/Blindfolded/ScriptableObjects/ConclusionNodoes/Leaving School Ending.asset
+Dependencies: []
