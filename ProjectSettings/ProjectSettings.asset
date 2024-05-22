@@ -138,6 +138,8 @@ PlayerSettings:
   bundleVersion: OVRTransitionAPKVersion
   preloadedAssets:
   - {fileID: 11400000, guid: bed949c14635bb04bb944899ec8d93fb, type: 2}
+  - {fileID: 11400000, guid: 932ecb46481153844b5815df68f76bbd, type: 2}
+  - {fileID: 2823478564450021047, guid: 36869cfd3fd928c49b5cb20e9697fdfe, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
