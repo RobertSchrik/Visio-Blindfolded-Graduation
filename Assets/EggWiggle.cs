@@ -37,4 +37,9 @@ public class EggWiggle : MonoBehaviour
         // Cancel Invoke when the script is disabled to avoid errors
         CancelInvoke();
     }
+
+    private void OnEnable()
+    {
+        StartWiggle();
+    }
 }
