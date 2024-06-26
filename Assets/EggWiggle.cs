@@ -5,6 +5,9 @@ using UnityEngine;
 public class EggWiggle : MonoBehaviour
 {
     public Animator animator;
+    public AudioSource audioSource;
+    public AudioClip audioClip;
+
     public float minWaitTime = 1f;
     public float maxWaitTime = 5f;
 
@@ -19,27 +22,42 @@ public class EggWiggle : MonoBehaviour
 
     void StartWiggle()
     {
-        animator.SetBool("Wiggle", true);
-        isWiggling = true;
-        Invoke("StopWiggle", waitTime);
+        StartCoroutine(WiggleCoroutine());
     }
 
-    void StopWiggle()
+    IEnumerator WiggleCoroutine()
     {
-        animator.SetBool("Wiggle", false);
-        isWiggling = false;
-        waitTime = Random.Range(minWaitTime, maxWaitTime);
-        Invoke("StartWiggle", waitTime);
+        while (true)
+        {
+            animator.SetBool("Wiggle", true);
+            isWiggling = true;
+            PlayAudioIfAvailable();
+
+            yield return new WaitForSeconds(waitTime);
+
+            animator.SetBool("Wiggle", false);
+            isWiggling = false;
+            waitTime = Random.Range(minWaitTime, maxWaitTime);
+            yield return new WaitForSeconds(waitTime);
+        }
+    }
+
+    private void PlayAudioIfAvailable()
+    {
+        if (audioSource && audioClip)
+        {
+            audioSource.clip = audioClip;
+            audioSource.Play();
+        }
     }
 
     void OnDisable()
     {
-        // Cancel Invoke when the script is disabled to avoid errors
-        CancelInvoke();
+        StopAllCoroutines(); // Stop the coroutine when the script is disabled
     }
 
-    private void OnEnable()
+    void OnEnable()
     {
-        StartWiggle();
+        StartWiggle(); // Restart the coroutine when the script is enabled
     }
 }

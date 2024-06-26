@@ -15,52 +15,150 @@ public class MiniGameController : MonoBehaviour
     public float detectionRadius = 2f;
     public int currentStage = 1;
     private GameObject[] currentStageObjects;
+    private List<GameObject> activeStageObjects = new List<GameObject>();
     public AudioClip collectSound;
     public AudioSource audioSource;
-    private int objectsTouched = 0;
     public TextMeshProUGUI victoryText;
-    private Coroutine soundCoroutine;
-    private GameObject closestObject;
-    public Animator backgroundNoiseAnimator; // Reference to the Animator component
+
+    private int objectsTouched = 0;
+    private bool tutorialCompleted = false;
+
+    // Tutorial audio clips
+    public AudioClip introClip;
+    public AudioClip tutorialPart1Clip;
+    public AudioClip tutorialPart1CompleteClip;
+    public AudioClip tutorialPart2Clip;
+    public AudioClip tutorialPart2ClipPart2;
+    public AudioClip tutorialPart2CompleteClip;
+    public AudioClip tutorialPart3Clip;
+    public AudioClip tutorialPart3SuccessClip;
+    public AudioClip tutorialPart3FailClip;
+
+    //Level audio clips
+    public AudioClip level1StartClip;
+    public AudioClip level2StartClip;
+    public AudioClip level3StartClip;
+    public AudioClip level4StartClip;
+
+    //Game Complete clip
+    public AudioClip gameCompletionClip;
+
+    public Transform doorEntrance;
+    public Transform roomCenter;
+    public AudioSource eggAudioSource;
+    public GameObject[] tutorialEggLocations;
 
     void Start()
     {
         DeactivateAllObjects();
         victoryText.gameObject.SetActive(false);
-        StartStage(currentStage);
+        StartCoroutine(TutorialSequence());
     }
 
     void Update()
     {
+        if (tutorialCompleted)
+        {
+            HandleGameplay();
+        }
+    }
+
+    IEnumerator TutorialSequence()
+    {
+        // Introduction
+        audioSource.PlayOneShot(introClip);
+        yield return new WaitForSeconds(introClip.length + 1f);
+
+        // Tutorial Part 1
+        audioSource.PlayOneShot(tutorialPart1Clip);
+        yield return new WaitForSeconds(tutorialPart1Clip.length + 1f);
+        yield return StartCoroutine(Task_WalkToLocation(doorEntrance.position));
+        audioSource.PlayOneShot(tutorialPart1CompleteClip);
+        yield return new WaitForSeconds(tutorialPart1CompleteClip.length + 1f);
+
+        // Tutorial Part 2
+        audioSource.PlayOneShot(tutorialPart2Clip);
+        yield return new WaitForSeconds(tutorialPart2Clip.length + 1f);
+        audioSource.PlayOneShot(tutorialPart2ClipPart2);
+        yield return new WaitForSeconds(tutorialPart2ClipPart2.length + 15f);
+        audioSource.PlayOneShot(tutorialPart2CompleteClip);
+        yield return new WaitForSeconds(tutorialPart2CompleteClip.length + 1f);
+        yield return StartCoroutine(Task_WalkToLocation(roomCenter.position));
+
+        // Tutorial Part 3
+        audioSource.PlayOneShot(tutorialPart3Clip);
+        yield return new WaitForSeconds(tutorialPart3Clip.length + 1f);
+        yield return StartCoroutine(Task_FindEgg());
+
+        // Mark tutorial as completed
+        tutorialCompleted = true;
+
+        // Start the game
+        StartStage(currentStage);
+    }
+
+    IEnumerator Task_WalkToLocation(Vector3 targetPosition)
+    {
+        while (Vector3.Distance(player.transform.position, targetPosition) > 1f)
+        {
+            yield return null;
+        }
+    }
+
+    IEnumerator Task_FindEgg()
+    {
+        bool eggFound = false;
+        eggAudioSource.gameObject.SetActive(true);
+        eggAudioSource.Play();
+
+        while (!eggFound)
+        {
+            float distance = Vector3.Distance(player.transform.position, eggAudioSource.transform.position);
+            if (distance <= 1f)
+            {
+                eggFound = true;
+                audioSource.PlayOneShot(tutorialPart3SuccessClip);
+                yield return new WaitForSeconds(tutorialPart3SuccessClip.length + 1f);
+            }
+            else
+            {
+                yield return null;
+            }
+        }
+
+        if (!eggFound)
+        {
+            audioSource.PlayOneShot(tutorialPart3FailClip);
+            yield return new WaitForSeconds(tutorialPart3FailClip.length + 1f);
+            yield return StartCoroutine(Task_FindEgg());
+        }
+    }
+
+    void HandleGameplay()
+    {
         if (currentStageObjects != null)
         {
-            foreach (GameObject obj in currentStageObjects)
+            foreach (GameObject obj in activeStageObjects)
             {
                 float distance = Vector3.Distance(player.transform.position, obj.transform.position);
 
                 if (currentStage == 2 || currentStage == 4)
                 {
-                    MeshRenderer meshRenderer = obj.GetComponent<MeshRenderer>();
-                    if (meshRenderer != null)
-                    {
-                        meshRenderer.enabled = (distance <= detectionRadius);
-                    }
+                    SetMeshRenderersEnabled(obj, distance <= detectionRadius);
                 }
 
                 if (distance <= 1f && obj.activeSelf)
                 {
-                    audioSource.PlayOneShot(collectSound);
-                    obj.SetActive(false); // Deactivate object once touched
-                    objectsTouched++;
-                    if (obj == closestObject)
+                    // Check if the object is already being collected
+                    Animator animator = obj.GetComponent<Animator>();
+                    if (animator != null && !animator.GetBool("PresentFound"))
                     {
-                        StopCoroutine(soundCoroutine); // Stop current sound coroutine
-                        ChooseNewSoundObject();
+                        StartCoroutine(PlayCollectAnimationAndDisable(obj));
                     }
                 }
             }
 
-            if (objectsTouched >= currentStageObjects.Length)
+            if (objectsTouched >= 3) // Now only 3 objects are required
             {
                 if (currentStage < 5)
                 {
@@ -68,8 +166,33 @@ public class MiniGameController : MonoBehaviour
                 }
                 return;
             }
+        }
+    }
 
-            UpdateClosestObject();
+    void SetMeshRenderersEnabled(GameObject obj, bool enabled)
+    {
+        MeshRenderer[] meshRenderers = obj.GetComponentsInChildren<MeshRenderer>();
+        foreach (MeshRenderer meshRenderer in meshRenderers)
+        {
+            meshRenderer.enabled = enabled;
+        }
+    }
+
+    IEnumerator PlayCollectAnimationAndDisable(GameObject obj)
+    {
+        Animator animator = obj.GetComponent<Animator>();
+        if (animator != null)
+        {
+            // Set the PresentFound flag to true to mark this object as being collected
+            animator.SetBool("PresentFound", true);
+            audioSource.PlayOneShot(collectSound);
+
+            // Wait for the animation to complete
+            yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length + 4f);
+
+            // Disable the object after the animation completes
+            obj.SetActive(false);
+            objectsTouched++;
         }
     }
 
@@ -81,113 +204,58 @@ public class MiniGameController : MonoBehaviour
         {
             case 1:
                 currentStageObjects = stage1Objects;
+                audioSource.PlayOneShot(level1StartClip);
                 break;
             case 2:
                 currentStageObjects = stage2Objects;
+                audioSource.PlayOneShot(level2StartClip);
                 break;
             case 3:
                 currentStageObjects = stage3Objects;
                 backgroundNoise.SetActive(true);
-                if (backgroundNoiseAnimator != null)
-                {
-                    backgroundNoiseAnimator.enabled = true; // Enable Animator
-                }
+                audioSource.PlayOneShot(level3StartClip);
                 break;
             case 4:
                 currentStageObjects = stage4Objects;
                 backgroundNoise.SetActive(true);
-                if (backgroundNoiseAnimator != null)
-                {
-                    backgroundNoiseAnimator.enabled = true; // Enable Animator
-                }
+                audioSource.PlayOneShot(level4StartClip);
                 break;
         }
 
-        foreach (GameObject obj in currentStageObjects)
+        activeStageObjects.Clear();
+        List<GameObject> shuffledObjects = new List<GameObject>(currentStageObjects);
+        Shuffle(shuffledObjects);
+        activeStageObjects.AddRange(shuffledObjects.GetRange(0, 3));
+
+        foreach (GameObject obj in activeStageObjects)
         {
             obj.SetActive(true);
             if (stage == 2 || stage == 4)
             {
-                MeshRenderer meshRenderer = obj.GetComponent<MeshRenderer>();
-                if (meshRenderer != null)
-                {
-                    meshRenderer.enabled = false;
-                }
+                SetMeshRenderersEnabled(obj, false);
             }
         }
-
-        ChooseNewSoundObject();
     }
 
     void NextStage()
     {
-        foreach (GameObject obj in currentStageObjects)
+        foreach (GameObject obj in activeStageObjects)
         {
             obj.SetActive(false);
         }
         backgroundNoise.SetActive(false);
-        if (backgroundNoiseAnimator != null)
-        {
-            backgroundNoiseAnimator.enabled = false; // Disable Animator
-        }
 
         currentStage++;
 
         if (currentStage > 4)
         {
             victoryText.gameObject.SetActive(true);
+            audioSource.PlayOneShot(gameCompletionClip);
             Debug.Log("Game Completed!");
         }
         else
         {
             StartStage(currentStage);
-        }
-    }
-
-    void ChooseNewSoundObject()
-    {
-        UpdateClosestObject();
-        if (closestObject != null)
-        {
-            soundCoroutine = StartCoroutine(PlaySoundWithRandomIntervals(closestObject));
-        }
-    }
-
-    void UpdateClosestObject()
-    {
-        float closestDistance = float.MaxValue;
-        closestObject = null;
-
-        foreach (GameObject obj in currentStageObjects)
-        {
-            if (obj.activeSelf)
-            {
-                float distance = Vector3.Distance(player.transform.position, obj.transform.position);
-                if (distance < closestDistance)
-                {
-                    closestDistance = distance;
-                    closestObject = obj;
-                }
-            }
-        }
-    }
-
-    IEnumerator PlaySoundWithRandomIntervals(GameObject soundObject)
-    {
-        AudioSource objAudioSource = soundObject.GetComponent<AudioSource>();
-
-        while (true)
-        {
-            if (objAudioSource != null)
-            {
-                objAudioSource.Play();
-                float randomDelay = Random.Range(1f, 5f); // Random delay between 1 and 5 seconds
-                yield return new WaitForSeconds(randomDelay);
-            }
-            else
-            {
-                yield break;
-            }
         }
     }
 
@@ -210,9 +278,19 @@ public class MiniGameController : MonoBehaviour
             obj.SetActive(false);
         }
         backgroundNoise.SetActive(false);
-        if (backgroundNoiseAnimator != null)
+    }
+
+    void Shuffle<T>(IList<T> list)
+    {
+        System.Random rng = new System.Random();
+        int n = list.Count;
+        while (n > 1)
         {
-            backgroundNoiseAnimator.enabled = false; // Disable Animator
+            n--;
+            int k = rng.Next(n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
         }
     }
 }

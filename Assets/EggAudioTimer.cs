@@ -6,8 +6,8 @@ public class EggAudioTimer : MonoBehaviour
 {
     public AudioSource audioSource;
     public AudioClip audioClip;
-    public float minAudioDelay = 5f;
-    public float maxAudioDelay = 10f;
+    public float minAudioDelay = 1f;
+    public float maxAudioDelay = 4f;
 
     private float audioDelay;
 
@@ -28,12 +28,18 @@ public class EggAudioTimer : MonoBehaviour
     {
         if (audioSource && audioClip)
         {
+            Debug.Log("Playing audio...");
+
             // Play the audio clip
             audioSource.clip = audioClip;
             audioSource.Play();
 
             // Schedule the next audio playback
             PlayAudioWithDelay();
+        }
+        else
+        {
+            Debug.LogWarning("AudioSource or AudioClip is missing!");
         }
     }
 
