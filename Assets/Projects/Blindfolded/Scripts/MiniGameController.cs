@@ -22,6 +22,7 @@ public class MiniGameController : MonoBehaviour
 
     private int objectsTouched = 0;
     private bool tutorialCompleted = false;
+    private GameObject currentAudioPlayingObject;
 
     // Tutorial audio clips
     public AudioClip introClip;
@@ -34,19 +35,20 @@ public class MiniGameController : MonoBehaviour
     public AudioClip tutorialPart3SuccessClip;
     public AudioClip tutorialPart3FailClip;
 
-    //Level audio clips
+    // Level audio clips
     public AudioClip level1StartClip;
     public AudioClip level2StartClip;
     public AudioClip level3StartClip;
     public AudioClip level4StartClip;
 
-    //Game Complete clip
+    // Game Complete clip
     public AudioClip gameCompletionClip;
 
     public Transform doorEntrance;
     public Transform roomCenter;
     public AudioSource eggAudioSource;
     public GameObject[] tutorialEggLocations;
+
 
     void Start()
     {
@@ -117,6 +119,7 @@ public class MiniGameController : MonoBehaviour
             if (distance <= 1f)
             {
                 eggFound = true;
+                eggAudioSource.gameObject.SetActive(false);
                 audioSource.PlayOneShot(tutorialPart3SuccessClip);
                 yield return new WaitForSeconds(tutorialPart3SuccessClip.length + 1f);
             }
@@ -138,9 +141,20 @@ public class MiniGameController : MonoBehaviour
     {
         if (currentStageObjects != null)
         {
+            GameObject closestObject = null;
+            float closestDistance = float.MaxValue;
+
             foreach (GameObject obj in activeStageObjects)
             {
+                if (!obj.activeSelf)
+                    continue;
+
                 float distance = Vector3.Distance(player.transform.position, obj.transform.position);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestObject = obj;
+                }
 
                 if (currentStage == 2 || currentStage == 4)
                 {
@@ -156,6 +170,18 @@ public class MiniGameController : MonoBehaviour
                         StartCoroutine(PlayCollectAnimationAndDisable(obj));
                     }
                 }
+            }
+
+            if (closestObject != null && closestObject != currentAudioPlayingObject)
+            {
+                if (currentAudioPlayingObject != null)
+                {
+                    // Stop the previous audio source if any
+                    currentAudioPlayingObject.GetComponent<AudioSource>().Stop();
+                }
+
+                currentAudioPlayingObject = closestObject;
+                currentAudioPlayingObject.GetComponent<AudioSource>().Play();
             }
 
             if (objectsTouched >= 3) // Now only 3 objects are required
@@ -187,6 +213,13 @@ public class MiniGameController : MonoBehaviour
             animator.SetBool("PresentFound", true);
             audioSource.PlayOneShot(collectSound);
 
+            // Mute the object's audio source
+            AudioSource objAudioSource = obj.GetComponent<AudioSource>();
+            if (objAudioSource != null)
+            {
+                objAudioSource.mute = true;
+            }
+
             // Wait for the animation to complete
             yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length + 4f);
 
@@ -195,6 +228,7 @@ public class MiniGameController : MonoBehaviour
             objectsTouched++;
         }
     }
+
 
     void StartStage(int stage)
     {
@@ -233,6 +267,12 @@ public class MiniGameController : MonoBehaviour
             if (stage == 2 || stage == 4)
             {
                 SetMeshRenderersEnabled(obj, false);
+            }
+
+            // Ensure each object has an AudioSource component
+            if (obj.GetComponent<AudioSource>() == null)
+            {
+                obj.AddComponent<AudioSource>();
             }
         }
     }

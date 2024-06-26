@@ -38,6 +38,7 @@ public class EggWiggle : MonoBehaviour
             animator.SetBool("Wiggle", false);
             isWiggling = false;
             waitTime = Random.Range(minWaitTime, maxWaitTime);
+            yield return new WaitForSeconds(audioClip.length);
             yield return new WaitForSeconds(waitTime);
         }
     }
