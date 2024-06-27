@@ -49,20 +49,39 @@ public class MiniGameController : MonoBehaviour
     public AudioSource eggAudioSource;
     public GameObject[] tutorialEggLocations;
 
+    public GameObject blockade_1;
+    public GameObject blockade_2;
+    public GameObject blockade_3;
+
+    public GameObject audioMainSource;
+
+    private bool isStarted = false;
+
 
     void Start()
     {
         DeactivateAllObjects();
-        victoryText.gameObject.SetActive(false);
-        StartCoroutine(TutorialSequence());
+        victoryText.gameObject.SetActive(false); 
     }
 
     void Update()
     {
+        if (!isStarted && IsAnyButtonPressed())
+        {
+            isStarted = true;
+            StartCoroutine(TutorialSequence());
+        }
+
         if (tutorialCompleted)
         {
             HandleGameplay();
         }
+    }
+
+    bool IsAnyButtonPressed()
+    {
+        // Check if any of the Oculus buttons are pressed
+        return OVRInput.GetDown(OVRInput.Button.Any);
     }
 
     IEnumerator TutorialSequence()
@@ -122,6 +141,7 @@ public class MiniGameController : MonoBehaviour
                 eggAudioSource.gameObject.SetActive(false);
                 audioSource.PlayOneShot(tutorialPart3SuccessClip);
                 yield return new WaitForSeconds(tutorialPart3SuccessClip.length + 1f);
+                //audioMainSource.transform.Rotate(0f, 180f, 0f);
             }
             else
             {
@@ -291,6 +311,9 @@ public class MiniGameController : MonoBehaviour
         {
             victoryText.gameObject.SetActive(true);
             audioSource.PlayOneShot(gameCompletionClip);
+            blockade_1.SetActive(false);
+            blockade_2.SetActive(false);
+            blockade_3.SetActive(false);
             Debug.Log("Game Completed!");
         }
         else
