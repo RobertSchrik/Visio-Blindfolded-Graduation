@@ -30,7 +30,7 @@ EditorBuildSettings:
     path: Assets/Projects/Blindfolded/Scenes/Main 1.unity
     guid: 306a9509508b68344b6ab945342633c5
   - enabled: 1
-    path: Assets/Projects/Blindfolded/Scenes/Main 2.unity
+    path: Assets/Projects/Blindfolded/Scenes/Visio_Orientation_Excersize.unity
     guid: 833220c8d5586aa43846f394fdf51827
   - enabled: 0
     path: Assets/Samples/Meta XR Core SDK/59.0.0/Sample Scenes/HandTest_Custom.unity
