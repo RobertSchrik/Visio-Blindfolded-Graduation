@@ -6,25 +6,31 @@ using TMPro;
 
 public class MiniGameController : MonoBehaviour
 {
+    private bool isStarted = false;
+
+    [Header("Stage collection object lists:")]
     public GameObject[] stage1Objects;
     public GameObject[] stage2Objects;
     public GameObject[] stage3Objects;
     public GameObject[] stage4Objects;
     public GameObject backgroundNoise;
+
+    private GameObject[] currentStageObjects;
+    private List<GameObject> activeStageObjects = new List<GameObject>();
+
+    [Header("Player Information:")]
     public GameObject player;
     public float detectionRadius = 2f;
     public int currentStage = 1;
-    private GameObject[] currentStageObjects;
-    private List<GameObject> activeStageObjects = new List<GameObject>();
+    private int objectsTouched = 0;
+
+    [Header("Audio Components:")]
     public AudioClip collectSound;
     public AudioSource audioSource;
-    public TextMeshProUGUI victoryText;
-
-    private int objectsTouched = 0;
-    private bool tutorialCompleted = false;
+    public GameObject audioMainSource;
     private GameObject currentAudioPlayingObject;
 
-    // Tutorial audio clips
+    [Header("Tutorial Audio Components:")]
     public AudioClip introClip;
     public AudioClip tutorialPart1Clip;
     public AudioClip tutorialPart1CompleteClip;
@@ -34,28 +40,27 @@ public class MiniGameController : MonoBehaviour
     public AudioClip tutorialPart3Clip;
     public AudioClip tutorialPart3SuccessClip;
     public AudioClip tutorialPart3FailClip;
+    private bool tutorialCompleted = false;
 
-    // Level audio clips
+    [Header("Level Audio Components:")]
     public AudioClip level1StartClip;
     public AudioClip level2StartClip;
     public AudioClip level3StartClip;
     public AudioClip level4StartClip;
 
-    // Game Complete clip
+    [Header("Conclusion Audio Component:")]
     public AudioClip gameCompletionClip;
+    public TextMeshProUGUI victoryText;
 
     public Transform doorEntrance;
     public Transform roomCenter;
     public AudioSource eggAudioSource;
     public GameObject[] tutorialEggLocations;
 
+    [Header("Game Boundry Components:")]
     public GameObject blockade_1;
     public GameObject blockade_2;
     public GameObject blockade_3;
-
-    public GameObject audioMainSource;
-
-    private bool isStarted = false;
 
 
     void Start()
@@ -80,7 +85,6 @@ public class MiniGameController : MonoBehaviour
 
     bool IsAnyButtonPressed()
     {
-        // Check if any of the Oculus buttons are pressed
         return OVRInput.GetDown(OVRInput.Button.Any);
     }
 
@@ -110,8 +114,6 @@ public class MiniGameController : MonoBehaviour
         audioSource.PlayOneShot(tutorialPart3Clip);
         yield return new WaitForSeconds(tutorialPart3Clip.length + 1f);
         yield return StartCoroutine(Task_FindEgg());
-
-        // Mark tutorial as completed
         tutorialCompleted = true;
 
         // Start the game
@@ -141,7 +143,6 @@ public class MiniGameController : MonoBehaviour
                 eggAudioSource.gameObject.SetActive(false);
                 audioSource.PlayOneShot(tutorialPart3SuccessClip);
                 yield return new WaitForSeconds(tutorialPart3SuccessClip.length + 1f);
-                //audioMainSource.transform.Rotate(0f, 180f, 0f);
             }
             else
             {
@@ -183,7 +184,6 @@ public class MiniGameController : MonoBehaviour
 
                 if (distance <= 1f && obj.activeSelf)
                 {
-                    // Check if the object is already being collected
                     Animator animator = obj.GetComponent<Animator>();
                     if (animator != null && !animator.GetBool("PresentFound"))
                     {
@@ -196,7 +196,6 @@ public class MiniGameController : MonoBehaviour
             {
                 if (currentAudioPlayingObject != null)
                 {
-                    // Stop the previous audio source if any
                     currentAudioPlayingObject.GetComponent<AudioSource>().Stop();
                 }
 
@@ -204,7 +203,7 @@ public class MiniGameController : MonoBehaviour
                 currentAudioPlayingObject.GetComponent<AudioSource>().Play();
             }
 
-            if (objectsTouched >= 3) // Now only 3 objects are required
+            if (objectsTouched >= 3)
             {
                 if (currentStage < 5)
                 {
@@ -229,21 +228,17 @@ public class MiniGameController : MonoBehaviour
         Animator animator = obj.GetComponent<Animator>();
         if (animator != null)
         {
-            // Set the PresentFound flag to true to mark this object as being collected
             animator.SetBool("PresentFound", true);
             audioSource.PlayOneShot(collectSound);
 
-            // Mute the object's audio source
             AudioSource objAudioSource = obj.GetComponent<AudioSource>();
             if (objAudioSource != null)
             {
                 objAudioSource.mute = true;
             }
 
-            // Wait for the animation to complete
             yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length + 4f);
 
-            // Disable the object after the animation completes
             obj.SetActive(false);
             objectsTouched++;
         }
@@ -289,7 +284,6 @@ public class MiniGameController : MonoBehaviour
                 SetMeshRenderersEnabled(obj, false);
             }
 
-            // Ensure each object has an AudioSource component
             if (obj.GetComponent<AudioSource>() == null)
             {
                 obj.AddComponent<AudioSource>();
