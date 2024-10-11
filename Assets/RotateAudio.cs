@@ -4,38 +4,60 @@ using UnityEngine;
 
 public class RotateAudio : MonoBehaviour
 {
-    public GameObject targetObject;  // The GameObject whose rotation will be changed
-    public float rotationX = 0f;     // The x-axis rotation value to be set when entering
-    private Vector3 initialRotation; // To store the initial rotation of the targetObject
-
-    private void Start()
-    {
-        if (targetObject != null)
-        {
-            initialRotation = targetObject.transform.rotation.eulerAngles;
-        }
-    }
+    public GameObject targetObject;
+    private bool isRotated = false;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))  // Assuming the player GameObject has the tag "Player"
+        if (other.CompareTag("Player"))
         {
-            if (targetObject != null)
+            if (targetObject != null && !isRotated)
             {
-                Vector3 newRotation = new Vector3(rotationX, targetObject.transform.rotation.eulerAngles.y, targetObject.transform.rotation.eulerAngles.z);
-                targetObject.transform.Rotate(0f, 180f, 0f);
+                targetObject.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
+                isRotated = true;
             }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))  // Assuming the player GameObject has the tag "Player"
+        if (other.CompareTag("Player"))
         {
-            if (targetObject != null)
+            if (targetObject != null && isRotated)
             {
-                targetObject.transform.Rotate(0f, 180f, 0f);
+                targetObject.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+                isRotated = false;
             }
+        }
+    }
+    public void DisableRotationAndResetPlayer()
+    {
+        targetObject.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+
+        this.enabled = false;
+        CheckForNewCollider();
+    }
+
+    private void CheckForNewCollider()
+    {
+        float radius = 1f;
+
+        Collider[] hitColliders = Physics.OverlapSphere(targetObject.transform.position, radius);
+
+        foreach (Collider hitCollider in hitColliders)
+        {
+            RotateAudio otherRotateAudio = hitCollider.GetComponentInChildren<RotateAudio>();
+            if (otherRotateAudio != null && otherRotateAudio.enabled)
+            {
+                otherRotateAudio.ForcePlayerRotation();
+            }
+        }
+    }
+    public void ForcePlayerRotation()
+    {
+        if (targetObject != null)
+        {
+            targetObject.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
         }
     }
 }

@@ -16,7 +16,7 @@ public class MiniGameController : MonoBehaviour
     public GameObject backgroundNoise;
 
     private GameObject[] currentStageObjects;
-    private List<GameObject> activeStageObjects = new List<GameObject>();
+    public List<GameObject> activeStageObjects = new List<GameObject>();
 
     [Header("Player Information:")]
     public GameObject player;
@@ -165,6 +165,7 @@ public class MiniGameController : MonoBehaviour
             GameObject closestObject = null;
             float closestDistance = float.MaxValue;
 
+            // Find the closest object
             foreach (GameObject obj in activeStageObjects)
             {
                 if (!obj.activeSelf)
@@ -177,11 +178,13 @@ public class MiniGameController : MonoBehaviour
                     closestObject = obj;
                 }
 
+                // Enable/Disable mesh renderers based on proximity
                 if (currentStage == 2 || currentStage == 4)
                 {
                     SetMeshRenderersEnabled(obj, distance <= detectionRadius);
                 }
 
+                // If player is close enough, trigger interaction
                 if (distance <= 1f && obj.activeSelf)
                 {
                     Animator animator = obj.GetComponent<Animator>();
@@ -192,17 +195,53 @@ public class MiniGameController : MonoBehaviour
                 }
             }
 
-            if (closestObject != null && closestObject != currentAudioPlayingObject)
+            // Stop all other audio sources and play only the closest object's audio
+            foreach (GameObject obj in activeStageObjects)
             {
-                if (currentAudioPlayingObject != null)
-                {
-                    currentAudioPlayingObject.GetComponent<AudioSource>().Stop();
-                }
+                AudioSource objAudioSource = obj.GetComponent<AudioSource>();
+                RotateAudio rotateAudio = obj.GetComponentInChildren<RotateAudio>();
 
-                currentAudioPlayingObject = closestObject;
-                currentAudioPlayingObject.GetComponent<AudioSource>().Play();
+                if (objAudioSource != null)
+                {
+                    if (obj == closestObject)
+                    {
+                        if (obj != currentAudioPlayingObject)
+                        {
+                            // Switch to the new closest object and play its audio
+                            if (currentAudioPlayingObject != null)
+                            {
+                                currentAudioPlayingObject.GetComponent<AudioSource>().Stop();
+                                // Disable the RotateAudio script on the previous object
+                                RotateAudio previousRotateAudio = currentAudioPlayingObject.GetComponentInChildren<RotateAudio>();
+                                if (previousRotateAudio != null)
+                                {
+                                    previousRotateAudio.enabled = false;
+                                }
+                            }
+                            currentAudioPlayingObject = obj;
+                            objAudioSource.Play();
+
+                            // Enable the RotateAudio script for the closest object
+                            if (rotateAudio != null)
+                            {
+                                rotateAudio.enabled = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Stop all other audio sources
+                        objAudioSource.Stop();
+                        // Disable the RotateAudio script for non-closest objects
+                        if (rotateAudio != null)
+                        {
+                            rotateAudio.enabled = false;
+                        }
+                    }
+                }
             }
 
+            // Check if enough objects have been interacted with to proceed to the next stage
             if (objectsTouched >= 3)
             {
                 if (currentStage < 5)
@@ -235,6 +274,12 @@ public class MiniGameController : MonoBehaviour
             if (objAudioSource != null)
             {
                 objAudioSource.mute = true;
+            }
+
+            RotateAudio rotateAudio = obj.GetComponentInChildren<RotateAudio>();
+            if (rotateAudio != null)
+            {
+                rotateAudio.DisableRotationAndResetPlayer();
             }
 
             yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length + 4f);

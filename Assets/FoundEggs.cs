@@ -6,9 +6,9 @@ using TMPro;
 public class FoundEggs : MonoBehaviour
 {
     public int score = 0;
-    public AudioClip collectSound; // Audio clip for collecting the egg
-    public AudioSource audioSource; // Reference to the AudioSource component
-    public TextMeshProUGUI victoryText; // Reference to the TextMeshPro text
+    public AudioClip collectSound;
+    public AudioSource audioSource;
+    public TextMeshProUGUI victoryText;
     private bool victoryTextActive = false;
     private bool buttonPressed = false;
     private float buttonPressTime = 0f;
@@ -18,13 +18,10 @@ public class FoundEggs : MonoBehaviour
     {
         if (other.gameObject.CompareTag("EasterEgg"))
         {
-            // Disable the Easter Egg object
             other.gameObject.SetActive(false);
             audioSource.PlayOneShot(collectSound);
-            // Increase the score
             score++;
 
-            // Print the score to the console (optional)
             Debug.Log("Score: " + score);
 
             if (score == 5 && victoryText != null)
