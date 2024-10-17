@@ -1,11 +1,5 @@
 {
   "dependencies": {
-    "com.atmoky.truespatial": {
-      "version": "file:D:/Graduation 2024-2024/Software/atmokyTrueSpatial_v1.1.0/atmokyTrueSpatial_v1.1.0/com.atmoky.truespatial-1.1.0.tgz",
-      "depth": 0,
-      "source": "local-tarball",
-      "dependencies": {}
-    },
     "com.meta.xr.sdk.all": {
       "version": "59.0.0",
       "depth": 0,

@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "com.atmoky.truespatial": "file:D:/Graduation 2024-2024/Software/atmokyTrueSpatial_v1.1.0/atmokyTrueSpatial_v1.1.0/com.atmoky.truespatial-1.1.0.tgz",
     "com.meta.xr.sdk.all": "59.0.0",
     "com.unity.ai.navigation": "1.1.5",
     "com.unity.collab-proxy": "2.0.7",
