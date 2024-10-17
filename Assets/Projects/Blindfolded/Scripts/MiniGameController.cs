@@ -2,10 +2,46 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEditor;
 using TMPro;
+using System.Runtime.CompilerServices;
 
 public class MiniGameController : MonoBehaviour
 {
+#if UNITY_EDITOR
+    [CustomEditor(typeof(MiniGameController))]
+    public class MiniGameControllerEditor : Editor
+    {
+        private bool errorHandlingFoldout = true;
+
+        public override void OnInspectorGUI()
+        {
+            MiniGameController script = (MiniGameController)target;
+            errorHandlingFoldout = EditorGUILayout.Foldout(errorHandlingFoldout, "Error Handling");
+            if (errorHandlingFoldout)
+            {
+                EditorGUI.indentLevel++; 
+
+                //Error handling status
+                //Current level & number of levels
+                if (script.currentStage < 5)
+                {
+                    EditorGUILayout.LabelField("Level Status:", $"{script.currentStage} out of {4}");
+                } else
+                {
+                    EditorGUILayout.LabelField("Level Status:", $"Completed Experience");
+                }
+                
+                //Current objective & and total number of objectives
+                EditorGUILayout.LabelField("Objective Status:", $"{script.objectsTouched} out of {3}");
+
+                EditorGUI.indentLevel--;
+            }
+            DrawDefaultInspector();
+        }
+    }
+#endif
+
     private bool isStarted = false;
 
     [Header("Stage collection object lists:")]
@@ -22,7 +58,7 @@ public class MiniGameController : MonoBehaviour
     public GameObject player;
     public float detectionRadius = 2f;
     public int currentStage = 1;
-    private int objectsTouched = 0;
+    public int objectsTouched = 0;
 
     [Header("Audio Components:")]
     public AudioClip collectSound;
